@@ -574,24 +574,38 @@ function FlowBalanceBars({ station, currentTime, onHourChange }) {
     const maxValue = Math.max(...hours.map((hour) => Math.max(inflow[hour] || 0, outflow[hour] || 0)), 1);
 
     return (
-        <div className="flow-balance">
-            {hours.map((hour) => (
-                <button
-                    key={hour}
-                    className={`flow-row ${hour === currentTime ? 'active' : ''}`}
-                    onClick={() => onHourChange(hour)}
-                    title={`${hourLabel(hour)} Inflow ${formatNumber(inflow[hour])}, Outflow ${formatNumber(outflow[hour])}`}
-                >
-                    <span className="flow-hour">{String(hour).padStart(2, '0')}</span>
-                    <span className="flow-side out">
-                        <i style={{ width: `${((outflow[hour] || 0) / maxValue) * 100}%` }} />
-                    </span>
-                    <span className="flow-axis" />
-                    <span className="flow-side in">
-                        <i style={{ width: `${((inflow[hour] || 0) / maxValue) * 100}%` }} />
-                    </span>
-                </button>
-            ))}
+        <div className="flow-balance-container">
+            <div className="flow-header">
+                <span>Outflow</span>
+                <span>Inflow</span>
+            </div>
+            <div className="flow-balance">
+                {hours.map((hour) => (
+                    <button
+                        key={hour}
+                        className={`flow-row ${hour === currentTime ? 'active' : ''}`}
+                        onClick={() => onHourChange(hour)}
+                        title={`${hourLabel(hour)} Inflow ${formatNumber(inflow[hour])}, Outflow ${formatNumber(outflow[hour])}`}
+                    >
+                        <span className="flow-hour">{String(hour).padStart(2, '0')}</span>
+                        <span className="flow-side out">
+                            <i style={{ width: `${((outflow[hour] || 0) / maxValue) * 100}%` }} />
+                        </span>
+                        <span className="flow-axis" />
+                        <span className="flow-side in">
+                            <i style={{ width: `${((inflow[hour] || 0) / maxValue) * 100}%` }} />
+                        </span>
+                    </button>
+                ))}
+            </div>
+            <div className="flow-footer">
+                <div className="flow-x-axis">
+                    <span>{formatNumber(maxValue)}</span>
+                    <span>0</span>
+                    <span>{formatNumber(maxValue)}</span>
+                </div>
+                <div className="x-axis-label">Flow Volume</div>
+            </div>
         </div>
     );
 }
@@ -600,27 +614,36 @@ function WeatherImpactTimeline({ events = [], values = [], currentTime, onHourCh
     const maxValue = Math.max(...values, 1);
 
     return (
-        <div className="weather-impact-timeline">
-            {hours.map((hour) => {
-                const event = events[hour] || DRY_WEATHER_EVENT;
-                const style = getWeatherStyle(event);
-                const load = values[hour] || 0;
-                return (
-                    <button
-                        key={hour}
-                        className={`weather-tick ${hour === currentTime ? 'active' : ''} ${event.weatherImpact !== 'Dry' ? 'event' : ''}`}
-                        style={{
-                            '--weather-color': style.color,
-                            '--load-height': `${Math.max(8, (load / maxValue) * 72)}%`,
-                        }}
-                        title={`${hourLabel(hour)} ${style.label}, load ${formatNumber(load)}`}
-                        onClick={() => onHourChange(hour, event)}
-                    >
-                        <span className="weather-texture" />
-                        <span className="weather-load" />
-                    </button>
-                );
-            })}
+        <div className="weather-timeline-container">
+            <div className="y-axis-label">Congestion</div>
+            <div className="weather-impact-timeline">
+                {hours.map((hour) => {
+                    const event = events[hour] || DRY_WEATHER_EVENT;
+                    const style = getWeatherStyle(event);
+                    const load = values[hour] || 0;
+                    return (
+                        <button
+                            key={hour}
+                            className={`weather-tick ${hour === currentTime ? 'active' : ''} ${event.weatherImpact !== 'Dry' ? 'event' : ''}`}
+                            style={{
+                                '--weather-color': style.color,
+                                '--load-height': `${Math.max(8, (load / maxValue) * 72)}%`,
+                            }}
+                            title={`${hourLabel(hour)} ${style.label}, congestion ${formatNumber(load)}`}
+                            onClick={() => onHourChange(hour, event)}
+                        >
+                            <span className="weather-texture" />
+                            <span className="weather-load" />
+                        </button>
+                    );
+                })}
+            </div>
+            <div className="timeline-x-axis">
+                {[0, 6, 12, 18, 23].map((hour) => (
+                    <span key={hour}>{String(hour).padStart(2, '0')}</span>
+                ))}
+            </div>
+            <div className="x-axis-label">Time (Hour)</div>
         </div>
     );
 }
@@ -849,7 +872,7 @@ function App() {
         "7호선": "#747F00", "8호선": "#E6186C", "9호선": "#BDB092"
     };
     const StateColors = {
-        "Crowded": "#f04438", "Moderate": "#f79009", "Normal": "#16a34a", "Smooth": "#6b7280"
+        "Crowded": "#f04438", "Moderate": "#9b1c1c", "Normal": "#16a34a", "Smooth": "#a3e635"
     };
     const SUBWAY_LINES = [
       {
@@ -1351,8 +1374,8 @@ function App() {
 
     return (
         <div className="app-container">
-            <header className="header-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative' }}>
-                <div className="logo-title" style={{ flex: '1' }}><h1>Seoul Subway Rhythm Atlas</h1></div>
+            <header className="header-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative', zIndex: 1000 }}>
+                <div className="logo-title" style={{ flex: '1' }}><h1>Seoul Subway Movement Flow</h1></div>
                 <div className="search-wrapper" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', zIndex: 100 }}>
                     <div className="search-container" style={{ display: 'flex', alignItems: 'center', background: '#fff', padding: '6px 15px', borderRadius: '20px', border: '2px solid #000', gap: '10px' }}>
                         <input type="text" placeholder="Search station, e.g. Gangnam" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} onKeyDown={e => e.key === 'Enter' && executeSearch()} style={{ background: 'transparent', border: 'none', color: '#000', outline: 'none', width: '200px', fontSize: '14px' }} />
@@ -1728,10 +1751,14 @@ function App() {
                                                 const up = selectedStation.train_data[ln].upper; const lo = selectedStation.train_data[ln].lower;
                                                 const getX = i => 45 + i * (285 / 23); const getY = v => 170 - (v / 200) * 130;
                                                 const ticks = [0, 50, 100, 150, 200];
+                                                const yUp = getY(up[currentTime]); const yLo = getY(lo[currentTime]);
+                                                const overlap = Math.abs(yUp - yLo) < 25;
+                                                const offUp = overlap ? (yUp < yLo ? -10 : 18) : -7;
+                                                const offLo = overlap ? (yLo < yUp ? -10 : 18) : 14;
                                                 return (<><line x1="45" y1="40" x2="45" y2="170" stroke="#bdc3c7" /><line x1="45" y1="170" x2="330" y2="170" stroke="#bdc3c7" /><line x1="45" y1={getY(100)} x2="330" y2={getY(100)} stroke="#fab1a0" strokeDasharray="2" />
                                                     {ticks.map(v => (<text key={v} x="40" y={getY(v) + 4} fontSize="8" fill="#7f8c8d" textAnchor="end">{v}%</text>))}
                                                     {[0, 6, 12, 18, 23].map(h => (<text key={h} x={getX(h)} y="185" fontSize="10" fill="#7f8c8d" textAnchor="middle">{h}h</text>))}
-                                                    <polyline points={up.map((v, i) => `${getX(i)},${getY(v)}`).join(' ')} fill="none" stroke="#8e44ad" strokeWidth="2" /><polyline points={lo.map((v, i) => `${getX(i)},${getY(v)}`).join(' ')} fill="none" stroke="#e67e22" strokeWidth="2" /><circle cx={getX(currentTime)} cy={getY(up[currentTime])} r="2.5" fill="#8e44ad" /><circle cx={getX(currentTime)} cy={getY(lo[currentTime])} r="2.5" fill="#e67e22" /><text x={getX(currentTime)} y={getY(up[currentTime])-7} fill="#8e44ad" fontSize="9" fontWeight="bold" textAnchor="middle">{up[currentTime]}%</text><text x={getX(currentTime)} y={getY(lo[currentTime])+14} fill="#e67e22" fontSize="9" fontWeight="bold" textAnchor="middle">{lo[currentTime]}%</text></>);
+                                                    <polyline points={up.map((v, i) => `${getX(i)},${getY(v)}`).join(' ')} fill="none" stroke="#8e44ad" strokeWidth="2" /><polyline points={lo.map((v, i) => `${getX(i)},${getY(v)}`).join(' ')} fill="none" stroke="#e67e22" strokeWidth="2" /><circle cx={getX(currentTime)} cy={yUp} r="2.5" fill="#8e44ad" /><circle cx={getX(currentTime)} cy={yLo} r="2.5" fill="#e67e22" /><text x={getX(currentTime)} y={yUp + offUp} fill="#8e44ad" fontSize="9" fontWeight="bold" textAnchor="middle">{up[currentTime]}%</text><text x={getX(currentTime)} y={yLo + offLo} fill="#e67e22" fontSize="9" fontWeight="bold" textAnchor="middle">{lo[currentTime]}%</text></>);
                                             })()}
                                         </svg>
                                     </div>

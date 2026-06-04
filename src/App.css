@@ -854,6 +854,96 @@ input[type="range"] { width: 100%; accent-color: #2c3e50; cursor: pointer; }
     outline-offset: 1px;
 }
 
+.weather-timeline-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.weather-timeline-container .y-axis-label {
+    position: absolute;
+    left: -24px;
+    top: 36px;
+    transform: rotate(-90deg);
+    font-size: 9px;
+    font-weight: 800;
+    color: #95a5a6;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.timeline-x-axis {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 4px;
+    font-size: 9px;
+    color: #95a5a6;
+    font-weight: 700;
+}
+
+.weather-timeline-container .x-axis-label {
+    text-align: center;
+    font-size: 9px;
+    font-weight: 800;
+    color: #95a5a6;
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
+.flow-balance-container .x-axis-label {
+    text-align: center;
+    font-size: 22.5px;
+    font-weight: 800;
+    color: #95a5a6;
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
+.flow-balance-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.flow-header {
+    display: grid;
+    grid-template-columns: 28px 1fr 2px 1fr;
+    gap: 6px;
+    font-size: 22.5px;
+    font-weight: 800;
+    color: #95a5a6;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.flow-header span:nth-child(1) { grid-column: 2; }
+.flow-header span:nth-child(2) { grid-column: 4; }
+
+.flow-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.flow-x-axis {
+    display: grid;
+    grid-template-columns: 28px 1fr 2px 1fr;
+    gap: 6px;
+    font-size: 22.5px;
+    color: #95a5a6;
+    font-weight: 700;
+}
+
+.flow-x-axis span {
+    text-align: center;
+}
+
+.flow-x-axis span:nth-child(1) { grid-column: 2; text-align: left; }
+.flow-x-axis span:nth-child(2) { grid-column: 3; text-align: center; transform: translateX(-50%); width: 20px; margin-left: 1px;}
+.flow-x-axis span:nth-child(3) { grid-column: 4; text-align: right; }
+
 .flow-balance {
     display: grid;
     gap: 3px;
